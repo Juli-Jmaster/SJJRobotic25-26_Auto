@@ -120,6 +120,7 @@ public class AutoBRed2 extends OpMode {
                 gateIntake(11, paths.path11);
                 break;
             case 11:
+                PassIntakeXOffTransferRed();
                 shooting(12, paths.path7);
         }
     }
