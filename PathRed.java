@@ -11,7 +11,7 @@ public class PathRed {
 
     public static Pose pickup1Pose = new Pose(126, 84.5, Math.toRadians(0));
     public static Pose pickup2Pose = new Pose(126, 57, Math.toRadians(0));
-    public static Pose pickup3Pose = new Pose(122, 35.5, Math.toRadians(0));
+    public static Pose pickup3Pose = new Pose(126, 35.5, Math.toRadians(0));
 
     public static Pose pickup1PoseCenter = new Pose(102, 82, Math.toRadians(0));
     public static Pose pickup2PoseCenter = new Pose(92, 55, Math.toRadians(0));

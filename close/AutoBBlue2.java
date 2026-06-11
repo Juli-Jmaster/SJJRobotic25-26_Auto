@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.close;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -10,6 +10,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.PathBlue;
 import org.firstinspires.ftc.teamcode.library.Subsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.AutoUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.ConstantsCanada;
@@ -68,7 +69,7 @@ public class AutoBBlue2 extends OpMode {
     public void start() {
         super.start();
         autoUtils.limelightStart(getRuntime());
-        Subsystem.startAuto();
+        Subsystem.startAutoClose();
         autoUtils.closeAutoAimBlue();
         Subsystem.t1.setPosition(0.5);
         Subsystem.t2.setPosition(0.5);

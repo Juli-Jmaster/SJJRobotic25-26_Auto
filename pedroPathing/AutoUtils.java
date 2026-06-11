@@ -58,6 +58,9 @@ public class AutoUtils {
     public void closeAutoAimBlue (){
         goalX=-2;
     }
+    public void farAutoAimRed(){
+        goalX=-2.5;
+    }
     public boolean turretAdjust(double runtime) {
         boolean ret = false;
        // error = goalX - result.getTx();

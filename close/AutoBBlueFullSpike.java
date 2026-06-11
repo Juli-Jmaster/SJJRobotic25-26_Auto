@@ -1,43 +1,41 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.close;
 
-import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.configurables.annotations.IgnoreConfigurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.PathBlue;
 import org.firstinspires.ftc.teamcode.library.Subsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.AutoUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.ConstantsCanada;
 
 @Autonomous
-public class AutoBRed2 extends OpMode {
+public class AutoBBlueFullSpike extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     private Timer pathTimer;
     private AutoUtils autoUtils;
     private Follower follower;
-    private PathsBRed2 paths; // Paths defined in the Paths class
+    private PathBBlueFullSpike paths; // Paths defined in the Paths class
     private boolean next = false;
     private boolean next2 = false;
     private boolean next3 = false;
     private boolean next4 = false;
     private int pathState =0;
-    private double IntakeOnXRed = 102;
+    private double IntakeOnXBlue = 42;
 
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         follower = ConstantsCanada.createFollower(hardwareMap);
-        follower.setStartingPose(PathRed.startPose);
-        paths = new PathsBRed2(follower); // Build paths
+        follower.setStartingPose(PathBlue.startPose);
+        paths = new PathBBlueFullSpike(follower); // Build paths
 
         autoUtils = new AutoUtils();
         Subsystem.init(hardwareMap);
@@ -71,8 +69,8 @@ public class AutoBRed2 extends OpMode {
     public void start() {
         super.start();
         autoUtils.limelightStart(getRuntime());
-        Subsystem.startAuto();
-        autoUtils.closeAutoAimRed();
+        Subsystem.startAutoClose();
+        autoUtils.closeAutoAimBlue();
         Subsystem.t1.setPosition(0.5);
         Subsystem.t2.setPosition(0.5);
         pathTimer = new Timer();
@@ -88,11 +86,11 @@ public class AutoBRed2 extends OpMode {
                 shooting(2, paths.path2);
                 break;
             case 2:
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(3, paths.path3);
                 break;
             case 3:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 shooting(4, paths.path4);
                 break;
             case 4:
@@ -102,26 +100,25 @@ public class AutoBRed2 extends OpMode {
                 gateIntake(6, paths.path6);
                 break;
             case 6:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 shooting(7, paths.path7);
                 break;
             case 7:
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(8, paths.path8);
                 break;
             case 8:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 shooting(9, paths.path9);
                 break;
             case 9:
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(10, paths.path10);
                 break;
             case 10:
-                gateIntake(11, paths.path11);
+                PassIntakeXOffTransferBlue();
+                shooting(11, paths.path7);
                 break;
-            case 11:
-                PassIntakeXOffTransferRed();
-                shooting(12, paths.path7);
         }
     }
 
@@ -137,15 +134,16 @@ public class AutoBRed2 extends OpMode {
         }
     }
 
-    private void AtIntakeXOnTransferRed() {
-        if (follower.getPose().getX() > IntakeOnXRed){
+
+    private void AtIntakeXOnTransferBlue() {
+        if (follower.getPose().getX() < IntakeOnXBlue){
             Subsystem.intake.setPower(0.9);
             Subsystem.transfer.setPower(-.6);
         }
     }
-
-    private void PassIntakeXOffTransferRed() {
-        if (follower.getPose().getX() < IntakeOnXRed && follower.isBusy()){
+    
+    private void PassIntakeXOffTransferBlue() {
+        if (follower.getPose().getX() > IntakeOnXBlue && follower.isBusy()){
             Subsystem.intake.setPower(0.0);
             Subsystem.transfer.setPower(0.0);
         }
@@ -199,55 +197,52 @@ public class AutoBRed2 extends OpMode {
 
 }
 
-class PathsBRed2 {
+class PathBBlueFullSpike {
+
     public PathChain path1, path2, path3, path4, path5, path6, path7, path8,path9, path10, path11, path12;
 
-    public PathsBRed2(Follower follower) {
+    public PathBBlueFullSpike(Follower follower) {
         //start
-       path1 = follower.pathBuilder().addPath( new BezierLine(
-               PathRed.startPose, PathRed.scorePose))
-               .setLinearHeadingInterpolation(PathRed.startPose.getHeading(), PathRed.scorePose.getHeading())
-               .build();
-       path2 = follower.pathBuilder().addPath(new BezierCurve(
-               PathRed.scorePose, PathRed.pickup2PoseCenter, PathRed.pickup2Pose))
-               .setLinearHeadingInterpolation(0, PathRed.pickup2Pose.getHeading())
-               .build();
-       path3 = follower.pathBuilder().addPath( new BezierLine(
-               PathRed.pickup2Pose, PathRed.scorePose))
-               .setLinearHeadingInterpolation(PathRed.pickup2Pose.getHeading(), PathRed.scorePose.getHeading())
-               .build();
-       path4 = follower.pathBuilder().addPath( new BezierCurve(
-                       PathRed.scorePose, PathRed.clearGateControlPoseFromScore, PathRed.clearGatePoseFromScore))
-               .setLinearHeadingInterpolation(0, PathRed.clearGatePoseFromScore.getHeading())
-               .build();
-       path5 = follower.pathBuilder().addPath(new BezierLine(
-                       PathRed.clearGatePoseFromScore, PathRed.pickupGatePose))
-               .setLinearHeadingInterpolation(PathRed.clearGatePoseFromScore.getHeading(), PathRed.pickupGatePose.getHeading())
-               .build();
-       path6 = follower.pathBuilder().addPath(new BezierCurve(
-                       PathRed.pickupGatePose, PathRed.pickup2PoseCenter, PathRed.scorePose))
-               .setLinearHeadingInterpolation(PathRed.pickupGatePose.getHeading(), PathRed.scorePose.getHeading())
-               .build();
-       path7 = follower.pathBuilder().addPath(new BezierLine(
-                       PathRed.scorePose, PathRed.pickup1Pose))
-               .setLinearHeadingInterpolation(0, PathRed.pickup1Pose.getHeading())
-               .build();
-       path8 = follower.pathBuilder().addPath(new BezierLine(
-                       PathRed.pickup1Pose, PathRed.scorePose))
-               .setLinearHeadingInterpolation(PathRed.pickup1Pose.getHeading(), PathRed.scorePose.getHeading())
-               .build();
-       path9 = follower.pathBuilder().addPath( new BezierCurve(
-                       PathRed.scorePose, PathRed.clearGateControlPoseFromScore, PathRed.clearGatePoseFromScore))
-               .setLinearHeadingInterpolation(0, PathRed.clearGatePoseFromScore.getHeading())
-               .build();
-       path10 = follower.pathBuilder().addPath(new BezierLine(
-                       PathRed.clearGatePoseFromScore, PathRed.pickupGatePose))
-               .setLinearHeadingInterpolation(PathRed.clearGatePoseFromScore.getHeading(), PathRed.pickupGatePose.getHeading())
-               .build();
-       path11 = follower.pathBuilder().addPath(new BezierCurve(
-                       PathRed.pickupGatePose, PathRed.pickup2PoseCenter, PathRed.scorePose))
-               .setLinearHeadingInterpolation(PathRed.pickupGatePose.getHeading(), PathRed.scorePose.getHeading())
-               .build();
+        path1 = follower.pathBuilder().addPath( new BezierLine(
+                         PathBlue.startPose,  PathBlue.scorePose))
+                .setLinearHeadingInterpolation( PathBlue.startPose.getHeading(),  PathBlue.scorePose.getHeading())
+                .build();
+        path2 = follower.pathBuilder().addPath(new BezierCurve(
+                         PathBlue.scorePose,  PathBlue.pickup2PoseCenter,  PathBlue.pickup2Pose))
+                .setLinearHeadingInterpolation(Subsystem.faceGoalBlue,  PathBlue.pickup2Pose.getHeading())
+                .build();
+        path3 = follower.pathBuilder().addPath( new BezierLine(
+                         PathBlue.pickup2Pose,  PathBlue.scorePose))
+                .setLinearHeadingInterpolation( PathBlue.pickup2Pose.getHeading(),  PathBlue.scorePose.getHeading())
+                .build();
+        path4 = follower.pathBuilder().addPath( new BezierCurve(
+                         PathBlue.scorePose,  PathBlue.clearGateControlPoseFromScore,  PathBlue.clearGatePoseFromScore))
+                .setLinearHeadingInterpolation(Subsystem.faceGoalBlue,  PathBlue.clearGatePoseFromScore.getHeading())
+                .build();
+        path5 = follower.pathBuilder().addPath(new BezierLine(
+                         PathBlue.clearGatePoseFromScore,  PathBlue.pickupGatePose))
+                .setLinearHeadingInterpolation( PathBlue.clearGatePoseFromScore.getHeading(),  PathBlue.pickupGatePose.getHeading())
+                .build();
+        path6 = follower.pathBuilder().addPath(new BezierCurve(
+                         PathBlue.pickupGatePose,  PathBlue.pickup2PoseCenter,  PathBlue.scorePose))
+                .setLinearHeadingInterpolation( PathBlue.pickupGatePose.getHeading(),  PathBlue.scorePose.getHeading())
+                .build();
+        path7 = follower.pathBuilder().addPath(new BezierLine(
+                         PathBlue.scorePose,  PathBlue.pickup1Pose))
+                .setLinearHeadingInterpolation(Subsystem.faceGoalBlue,  PathBlue.pickup1Pose.getHeading())
+                .build();
+        path8 = follower.pathBuilder().addPath(new BezierLine(
+                         PathBlue.pickup1Pose,  PathBlue.scorePose))
+                .setLinearHeadingInterpolation( PathBlue.pickup1Pose.getHeading(),  PathBlue.scorePose.getHeading())
+                .build();
+        path9 = follower.pathBuilder().addPath( new BezierCurve(
+                         PathBlue.scorePose,  PathBlue.pickup3PoseCenter,  PathBlue.pickup3Pose))
+                .setLinearHeadingInterpolation(Subsystem.faceGoalBlue,  PathBlue.pickup3Pose.getHeading())
+                .build();
+        path10 = follower.pathBuilder().addPath(new BezierLine(
+                         PathBlue.pickup3Pose,  PathBlue.scorePose))
+                .setLinearHeadingInterpolation( PathBlue.pickup3Pose.getHeading(),  PathBlue.scorePose.getHeading())
+                .build();
     }
 
 }

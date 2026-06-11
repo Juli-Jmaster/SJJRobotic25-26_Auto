@@ -15,9 +15,9 @@ public class Subsystem {
     public static Servo hood;
 
     public static int closeVel = 720+30;
-    public static int farVel =10;//= 1000;
-    public static double closeAngle = 0.0;
-    public static double farAngle = 0.0;
+    public static int farVel =960;//= 1000;
+    public static double closeAngle = 0.0928;
+    public static double farAngle = .1;
     public static double faceGoalBlue = Math.toRadians(180);
     public static double faceGoalRed = 0;
     public static Servo t1;
@@ -60,17 +60,16 @@ public class Subsystem {
         outtake.setVelocity(900);
     }
 
-    public static void startAuto(){
-        hood.setPosition(0.0928);
+    public static void startAutoClose(){
+        hood.setPosition(closeAngle);
      //   stop.setPosition(0.2);
         outtake.setVelocity(closeVel+30);
         outtake2.setVelocity(closeVel+30);
     }
     public static void startAutoFar(){
-        hood.setPosition(.09);
-        //   stop.setPosition(0.2);
-      //  outtake.setVelocity(farVel+30);
-        outtake.setVelocity(10);
+        hood.setPosition(farAngle);
+        outtake.setVelocity(farVel+10);
+        outtake2.setVelocity(farVel+10);
     } public static void setVelocityOuttake(double velocity) {
         outtake.setVelocity(velocity);
         outtake2.setVelocity(velocity);

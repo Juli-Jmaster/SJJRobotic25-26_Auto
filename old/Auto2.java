@@ -72,7 +72,7 @@ public class Auto2 extends OpMode {
     public void start() {
         super.start();
         autoUtils.limelightStart(getRuntime());
-        Subsystem.startAuto();
+        Subsystem.startAutoClose();
         next=false;
         pathTimer = new Timer();
         Subsystem.intake.setPower(0.6);

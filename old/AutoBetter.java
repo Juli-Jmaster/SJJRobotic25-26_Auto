@@ -75,7 +75,7 @@ public class AutoBetter extends OpMode {
     public void start() {
         super.start();
         autoUtils.limelightStart(getRuntime());
-        Subsystem.startAuto();
+        Subsystem.startAutoClose();
         Subsystem.t1.setPosition(0.5);
         Subsystem.t2.setPosition(0.5);
 //        Subsystem.outtake.setVelocity(0);
