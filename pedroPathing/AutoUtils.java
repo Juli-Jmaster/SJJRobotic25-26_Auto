@@ -48,18 +48,22 @@ public class AutoUtils {
     public double kDoutside = 0;
     public double kPinside = .15;
     public double kDinside = 0;
+    public double shootingRange = 2;
 
 //    public void farAutoAim() {
 //        goalX = -3;
 //    }
     public void closeAutoAimRed (){
         goalX=2;
+        shootingRange=2;
     }
     public void closeAutoAimBlue (){
         goalX=-2;
+        shootingRange=2;
     }
     public void farAutoAimRed(){
         goalX=-2.5;
+        shootingRange=1.2;
     }
     public boolean turretAdjust(double runtime) {
         boolean ret = false;
@@ -142,7 +146,7 @@ public class AutoUtils {
 
                 rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
                 rotate*=-1;
-                if (Math.abs(error) < 2) {
+                if (Math.abs(error) < shootingRange) {
                     ret=true;
                 } else {
                     ret=false;

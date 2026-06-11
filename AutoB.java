@@ -88,19 +88,19 @@ public class AutoB extends OpMode {
                 break;
             case 2:
                 PassIntakeXOffTransferRed();
-                humanPlayerHoldIntakeShoot(3, paths.path3);
+                shooting(3, paths.path3);
 //                shooting(3, paths.path3);
                 break;
             case 3:
-                next4=false;
                 AtIntakeXOnTransferRed();
                 notBusyNextState(4, paths.path4);
                 break;
             case 4:
                 PassIntakeXOffTransferRed();
-                shooting(5, paths.path5);
+                HoldIntakeShoot(5, paths.path5);
                 break;
             case 5:
+                next4=false;
                 AtIntakeXOnTransferRed();
                 notBusyNextState(6, paths.path6);
                 break;
@@ -108,8 +108,23 @@ public class AutoB extends OpMode {
                 PassIntakeXOffTransferRed();
                 shooting(7, paths.path7);
                 break;
+                /// ////repeat
             case 7:
+                AtIntakeXOnTransferRed();
                 notBusyNextState(8, paths.path8);
+                break;
+            case 8:
+                PassIntakeXOffTransferRed();
+                HoldIntakeShoot(9, paths.path9);
+                break;
+            case 9:
+                next4=false;
+                AtIntakeXOnTransferRed();
+                notBusyNextState(10, paths.path10);
+                break;
+            case 10:
+                PassIntakeXOffTransferRed();
+                HoldIntakeShoot(11, paths.path9);
                 break;
 //            case 8:
 //                PassIntakeXOffTransferRed();
@@ -127,18 +142,6 @@ public class AutoB extends OpMode {
         }
     }
 
-    public void gateIntake(int pState, PathChain paths) {
-        Subsystem.intake.setPower(0.9);
-        Subsystem.transfer.setPower(-0.5);
-        if (!follower.isBusy() && !next3) {
-            next3 = true;
-            pathTimer.resetTimer();
-        }
-        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > 1.75) {
-            setPathStateAndFollow(pState, paths);
-        }
-    }
-
     private void AtIntakeXOnTransferRed() {
         if (follower.getPose().getX() > IntakeOnXRed){
             Subsystem.intake.setPower(0.9);
@@ -152,14 +155,14 @@ public class AutoB extends OpMode {
             Subsystem.transfer.setPower(0.0);
         }
     }
-    private void humanPlayerHoldIntakeShoot(int pState, PathChain path) {
+    private void HoldIntakeShoot(int pState, PathChain path) {
         if (!follower.isBusy() && !next3 && !next4){
             next3=true;
             Subsystem.intake.setPower(0.8);
             Subsystem.transfer.setPower(-.6);
             pathTimer.resetTimer();
         }
-        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > .5){
+        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > .25){
             next3=false;
             next4=true;
             Subsystem.intake.setPower(0.0);
@@ -190,7 +193,7 @@ public class AutoB extends OpMode {
             next=true;
             pathTimer.resetTimer();
         }
-        if (!follower.isBusy()  && (Subsystem.outtake.getVelocity() >= Subsystem.farVel-10 && Subsystem.outtake.getVelocity() <= Subsystem.farVel+80 ) && (autoUtils.limelight(getRuntime()) || pathTimer.getElapsedTimeSeconds() > 1.25)&& next){
+        if (!follower.isBusy()  && (Subsystem.outtake.getVelocity() >= Subsystem.farVel-10 && Subsystem.outtake.getVelocity() <= Subsystem.farVel+80 ) && (autoUtils.limelight(getRuntime()) || pathTimer.getElapsedTimeSeconds() > 1)&& next){
             next=false;
             next2=true;
             autoUtils.shooting=true;
@@ -223,21 +226,21 @@ class PathsBFar {
 
     public PathsBFar(Follower follower) {
         //start
-        path1 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.startPose, PathRedFar.pickupHumanPose))
-                .setLinearHeadingInterpolation(PathRedFar.startPose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+        path1 = follower.pathBuilder().addPath( new BezierCurve(
+                        PathRedFar.startPose, PathRedFar.pickup3Control1Pose, PathRedFar.pickup3Control2Pose, PathRedFar.pickup3Pose))
+                .setLinearHeadingInterpolation(PathRedFar.startPose.getHeading(), PathRedFar.pickup3Pose.getHeading())
                 .build();
-        path2 = follower.pathBuilder().addPath(new BezierLine(
+        path2 = follower.pathBuilder().addPath( new BezierLine(
+                        PathRedFar.pickup3Pose, PathRedFar.scorePose))
+                .setLinearHeadingInterpolation(PathRedFar.pickup3Pose.getHeading(), PathRedFar.scorePose.getHeading())
+                .build();
+        path3 = follower.pathBuilder().addPath( new BezierLine(
+                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                .build();
+        path4 = follower.pathBuilder().addPath(new BezierLine(
                         PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
                 .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
-                .build();
-        path3 = follower.pathBuilder().addPath( new BezierCurve(
-                        PathRedFar.scorePose, PathRedFar.pickup3Control1Pose, PathRedFar.pickup3Control2Pose, PathRedFar.pickup3Pose))
-                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickup3Pose.getHeading())
-                .build();
-        path4 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.pickup3Pose, PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(0, PathRedFar.pickup3Pose.getHeading())
                 .build();
         path5 = follower.pathBuilder().addPath(new BezierCurve(
                         PathRedFar.scorePose, PathRedFar.pickupLineControlPose, PathRedFar.pickupLinePose))
@@ -246,6 +249,23 @@ class PathsBFar {
         path6 = follower.pathBuilder().addPath(new BezierLine(
                         PathRedFar.pickupLinePose, PathRedFar.scorePose))
                 .setLinearHeadingInterpolation(PathRedFar.pickupLinePose.getHeading(), PathRedFar.scorePose.getHeading())
+                .build();
+
+        path7 = follower.pathBuilder().addPath( new BezierLine(
+                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                .build();
+        path8 = follower.pathBuilder().addPath(new BezierLine(
+                        PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
+                .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
+                .build();
+        path9 = follower.pathBuilder().addPath( new BezierLine(
+                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                .build();
+        path10 = follower.pathBuilder().addPath(new BezierLine(
+                        PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
+                .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
                 .build();
 //        path7 = follower.pathBuilder().addPath(new BezierLine(
 //                        PathRed.scorePose, PathRed.pickup1Pose))
