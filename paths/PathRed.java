@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.paths;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
@@ -10,11 +10,11 @@ public class PathRed {
     public static Pose scorePose = new Pose(87, 77, Math.toRadians(40));
 
     public static Pose pickup1Pose = new Pose(126, 84.5, Math.toRadians(0));
-    public static Pose pickup2Pose = new Pose(126, 57, Math.toRadians(0));
+    public static Pose pickup2Pose = new Pose(126, 58, Math.toRadians(0));
     public static Pose pickup3Pose = new Pose(126, 35.5, Math.toRadians(0));
 
     public static Pose pickup1PoseCenter = new Pose(102, 82, Math.toRadians(0));
-    public static Pose pickup2PoseCenter = new Pose(92, 55, Math.toRadians(0));
+    public static Pose pickup2PoseCenter = new Pose(85, 56, Math.toRadians(0));
     public static Pose pickup3PoseCenter = new Pose(87, 30, Math.toRadians(0));
 
     public static Pose clearGatePoseFrom1 = new Pose(124, 75, Math.toRadians(0));

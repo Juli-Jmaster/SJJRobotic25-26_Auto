@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.far;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -10,32 +10,32 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.PathRedFar;
+import org.firstinspires.ftc.teamcode.paths.PathBlueFar;
 import org.firstinspires.ftc.teamcode.library.Subsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.AutoUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.ConstantsCanada;
 
-@Autonomous
-public class AutoB extends OpMode {
+@Autonomous(name = "Blue Far", group = "blue")
+public class AutoFarBlue extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     private Timer pathTimer;
     private AutoUtils autoUtils;
     private Follower follower;
-    private PathsBFar paths; // Paths defined in the Paths class
+    private PathsFarBlue paths; // Paths defined in the Paths class
     private boolean next = false;
     private boolean next2 = false;
     private boolean next3 = false;
     private boolean next4 = false;
     private int pathState =0;
-    private double IntakeOnXRed = 102;
+    private double IntakeOnXBlue = 42;
 
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         follower = ConstantsCanada.createFollower(hardwareMap);
-        follower.setStartingPose(PathRedFar.startPose);
-        paths = new PathsBFar(follower); // Build paths
+        follower.setStartingPose(PathBlueFar.startPose);
+        paths = new PathsFarBlue(follower); // Build paths
 
         autoUtils = new AutoUtils();
         Subsystem.init(hardwareMap);
@@ -70,9 +70,9 @@ public class AutoB extends OpMode {
         super.start();
         autoUtils.limelightStart(getRuntime());
         Subsystem.startAutoFar();
-        autoUtils.farAutoAimRed();
-        Subsystem.t1.setPosition(0.1061);
-        Subsystem.t2.setPosition(0.1061);
+        autoUtils.farAutoAimBlue();
+        Subsystem.t1.setPosition(.8939);
+        Subsystem.t2.setPosition(.8939);
         pathTimer = new Timer();
         pathState=0;
     }
@@ -83,74 +83,61 @@ public class AutoB extends OpMode {
                 shooting(1, paths.path1);
                 break;
             case 1:
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(2, paths.path2);
                 break;
             case 2:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 shooting(3, paths.path3);
 //                shooting(3, paths.path3);
                 break;
             case 3:
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(4, paths.path4);
                 break;
             case 4:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 HoldIntakeShoot(5, paths.path5);
                 break;
             case 5:
                 next4=false;
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(6, paths.path6);
                 break;
             case 6:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 shooting(7, paths.path7);
                 break;
                 /// ////repeat
             case 7:
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(8, paths.path8);
                 break;
             case 8:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 HoldIntakeShoot(9, paths.path9);
                 break;
             case 9:
                 next4=false;
-                AtIntakeXOnTransferRed();
+                AtIntakeXOnTransferBlue();
                 notBusyNextState(10, paths.path10);
                 break;
             case 10:
-                PassIntakeXOffTransferRed();
+                PassIntakeXOffTransferBlue();
                 HoldIntakeShoot(11, paths.path9);
                 break;
-//            case 8:
-//                PassIntakeXOffTransferRed();
-//                shooting(9, paths.path9);
-//                break;
-//            case 9:
-//                notBusyNextState(10, paths.path10);
-//                break;
-//            case 10:
-//                gateIntake(11, paths.path11);
-//                break;
-//            case 11:
-//                PassIntakeXOffTransferRed();
-//                shooting(12, paths.path7);
         }
     }
 
-    private void AtIntakeXOnTransferRed() {
-        if (follower.getPose().getX() > IntakeOnXRed){
-            Subsystem.intake.setPower(0.9);
+    private void AtIntakeXOnTransferBlue() {
+        if (follower.getPose().getX() < IntakeOnXBlue){
+            Subsystem.intake.setPower(0.8);
             Subsystem.transfer.setPower(-.6);
         }
     }
 
-    private void PassIntakeXOffTransferRed() {
-        if (follower.getPose().getX() < IntakeOnXRed && follower.isBusy()){
+    private void PassIntakeXOffTransferBlue() {
+        if (follower.getPose().getX() > IntakeOnXBlue && follower.isBusy()){
             Subsystem.intake.setPower(0.0);
             Subsystem.transfer.setPower(0.0);
         }
@@ -162,7 +149,7 @@ public class AutoB extends OpMode {
             Subsystem.transfer.setPower(-.6);
             pathTimer.resetTimer();
         }
-        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > .25){
+        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > .5){
             next3=false;
             next4=true;
             Subsystem.intake.setPower(0.0);
@@ -221,72 +208,52 @@ public class AutoB extends OpMode {
 
 }
 
-class PathsBFar {
+class PathsFarBlue {
     public PathChain path1, path2, path3, path4, path5, path6, path7, path8,path9, path10, path11, path12;
 
-    public PathsBFar(Follower follower) {
+    public PathsFarBlue(Follower follower) {
         //start
         path1 = follower.pathBuilder().addPath( new BezierCurve(
-                        PathRedFar.startPose, PathRedFar.pickup3Control1Pose, PathRedFar.pickup3Control2Pose, PathRedFar.pickup3Pose))
-                .setLinearHeadingInterpolation(PathRedFar.startPose.getHeading(), PathRedFar.pickup3Pose.getHeading())
+                        PathBlueFar.startPose, PathBlueFar.pickup3Control1Pose, PathBlueFar.pickup3Control2Pose, PathBlueFar.pickup3Pose))
+                .setLinearHeadingInterpolation(PathBlueFar.startPose.getHeading(), PathBlueFar.pickup3Pose.getHeading())
                 .build();
         path2 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.pickup3Pose, PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(PathRedFar.pickup3Pose.getHeading(), PathRedFar.scorePose.getHeading())
+                        PathBlueFar.pickup3Pose, PathBlueFar.scorePose))
+                .setLinearHeadingInterpolation(PathBlueFar.pickup3Pose.getHeading(), PathBlueFar.scorePose.getHeading())
                 .build();
         path3 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
-                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                        PathBlueFar.scorePose, PathBlueFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathBlueFar.scorePose.getHeading(), PathBlueFar.pickupHumanPose.getHeading())
                 .build();
         path4 = follower.pathBuilder().addPath(new BezierLine(
-                        PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
+                        PathBlueFar.pickupHumanPose,  PathBlueFar.scorePose))
+                .setLinearHeadingInterpolation(PathBlueFar.pickupHumanPose.getHeading(), PathBlueFar.scorePose.getHeading())
                 .build();
         path5 = follower.pathBuilder().addPath(new BezierCurve(
-                        PathRedFar.scorePose, PathRedFar.pickupLineControlPose, PathRedFar.pickupLinePose))
-                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupLinePose.getHeading())
+                        PathBlueFar.scorePose, PathBlueFar.pickupLineControlPose, PathBlueFar.pickupLinePose))
+                .setLinearHeadingInterpolation(PathBlueFar.scorePose.getHeading(), PathBlueFar.pickupLinePose.getHeading())
                 .build();
         path6 = follower.pathBuilder().addPath(new BezierLine(
-                        PathRedFar.pickupLinePose, PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(PathRedFar.pickupLinePose.getHeading(), PathRedFar.scorePose.getHeading())
+                        PathBlueFar.pickupLinePose, PathBlueFar.scorePose))
+                .setLinearHeadingInterpolation(PathBlueFar.pickupLinePose.getHeading(), PathBlueFar.scorePose.getHeading())
                 .build();
 
         path7 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
-                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                        PathBlueFar.scorePose, PathBlueFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathBlueFar.scorePose.getHeading(), PathBlueFar.pickupHumanPose.getHeading())
                 .build();
         path8 = follower.pathBuilder().addPath(new BezierLine(
-                        PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
+                        PathBlueFar.pickupHumanPose,  PathBlueFar.scorePose))
+                .setLinearHeadingInterpolation(PathBlueFar.pickupHumanPose.getHeading(), PathBlueFar.scorePose.getHeading())
                 .build();
         path9 = follower.pathBuilder().addPath( new BezierLine(
-                        PathRedFar.scorePose, PathRedFar.pickupHumanPose))
-                .setLinearHeadingInterpolation(PathRedFar.scorePose.getHeading(), PathRedFar.pickupHumanPose.getHeading())
+                        PathBlueFar.scorePose, PathBlueFar.pickupHumanPose))
+                .setLinearHeadingInterpolation(PathBlueFar.scorePose.getHeading(), PathBlueFar.pickupHumanPose.getHeading())
                 .build();
         path10 = follower.pathBuilder().addPath(new BezierLine(
-                        PathRedFar.pickupHumanPose,  PathRedFar.scorePose))
-                .setLinearHeadingInterpolation(0, PathRedFar.scorePose.getHeading())
+                        PathBlueFar.pickupHumanPose,  PathBlueFar.scorePose))
+                .setLinearHeadingInterpolation(PathBlueFar.pickupHumanPose.getHeading(), PathBlueFar.scorePose.getHeading())
                 .build();
-//        path7 = follower.pathBuilder().addPath(new BezierLine(
-//                        PathRed.scorePose, PathRed.pickup1Pose))
-//                .setLinearHeadingInterpolation(0, PathRed.pickup1Pose.getHeading())
-//                .build();
-//        path8 = follower.pathBuilder().addPath(new BezierLine(
-//                        PathRed.pickup1Pose, PathRed.scorePose))
-//                .setLinearHeadingInterpolation(PathRed.pickup1Pose.getHeading(), PathRed.scorePose.getHeading())
-//                .build();
-//        path9 = follower.pathBuilder().addPath( new BezierCurve(
-//                        PathRed.scorePose, PathRed.clearGateControlPoseFromScore, PathRed.clearGatePoseFromScore))
-//                .setLinearHeadingInterpolation(0, PathRed.clearGatePoseFromScore.getHeading())
-//                .build();
-//        path10 = follower.pathBuilder().addPath(new BezierLine(
-//                        PathRed.clearGatePoseFromScore, PathRed.pickupGatePose))
-//                .setLinearHeadingInterpolation(PathRed.clearGatePoseFromScore.getHeading(), PathRed.pickupGatePose.getHeading())
-//                .build();
-//        path11 = follower.pathBuilder().addPath(new BezierCurve(
-//                        PathRed.pickupGatePose, PathRed.pickup2PoseCenter, PathRed.scorePose))
-//                .setLinearHeadingInterpolation(PathRed.pickupGatePose.getHeading(), PathRed.scorePose.getHeading())
-//                .build();
     }
 
 }

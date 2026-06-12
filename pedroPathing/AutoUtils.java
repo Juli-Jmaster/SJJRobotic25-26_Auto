@@ -62,7 +62,11 @@ public class AutoUtils {
         shootingRange=2;
     }
     public void farAutoAimRed(){
-        goalX=-2.5;
+        goalX=-3;
+        shootingRange=1.2;
+    }
+    public void farAutoAimBlue(){
+        goalX=3;
         shootingRange=1.2;
     }
     public boolean turretAdjust(double runtime) {

@@ -10,12 +10,12 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.PathBlue;
+import org.firstinspires.ftc.teamcode.paths.PathBlue;
 import org.firstinspires.ftc.teamcode.library.Subsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.AutoUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.ConstantsCanada;
 
-@Autonomous
+@Autonomous(name = "Blue full spike", group = "blue")
 public class AutoBBlueFullSpike extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     private Timer pathTimer;

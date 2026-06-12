@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.library;
+package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.NanoTimer;
 import com.pedropathing.util.Timer;
+
+import org.firstinspires.ftc.teamcode.library.Subsystem;
 
 public class DecodeFunctions {
     private Follower follower;
@@ -12,6 +13,7 @@ public class DecodeFunctions {
     private boolean next;
     private boolean next2;
     private boolean next3;
+    private boolean next4;
     private Timer pathTimer;
 
 
@@ -61,6 +63,23 @@ public class DecodeFunctions {
         }
         if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > 1.75) {
             setPathStateAndFollow(pState, paths);
+        }
+    }
+    private void HoldIntakeShoot(int pState, PathChain path) {
+        if (!follower.isBusy() && !next3 && !next4){
+            next3=true;
+            Subsystem.intake.setPower(0.8);
+            Subsystem.transfer.setPower(-.6);
+            pathTimer.resetTimer();
+        }
+        if (!follower.isBusy() && next3 && pathTimer.getElapsedTimeSeconds() > .5){
+            next3=false;
+            next4=true;
+            Subsystem.intake.setPower(0.0);
+            Subsystem.transfer.setPower(0.0);
+        }
+        if (!follower.isBusy() && next4){
+            shooting(pState, path);
         }
     }
 
